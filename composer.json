@@ -1,0 +1,40 @@
+{
+  "name": "sabatinomasala/dev-scripts-for-laravel",
+  "description": "Helper for running multiple dev scripts in Laravel",
+  "keywords": [
+    "SabatinoMasala",
+    "Dev scripts"
+  ],
+  "homepage": "https://github.com/SabatinoMasala/dev-scripts-for-laravel",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "SabatinoMasala",
+      "email": "masalasabatino@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "laravel/framework": "^11.9"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "SabatinoMasala\\DevScriptsForLaravel\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "SabatinoMasala\\DevScriptsForLaravel\\DevScriptsServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
