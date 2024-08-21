@@ -2,7 +2,7 @@
 
 return [
     'scripts' => [
-        'horizon' => [
+        'queue' => [
             'command' => ['php', 'artisan', 'queue:work'],
             'style' => ['cyan', null, ['bold']],
             'logging' => true,
