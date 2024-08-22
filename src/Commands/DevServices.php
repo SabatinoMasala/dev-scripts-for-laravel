@@ -42,6 +42,7 @@ class DevServices extends Command implements SignalableCommandInterface
                 $key => [
                     'process' => $process,
                     'logging' => $input['logging'],
+                    'log_options' => !empty($input['log_options']) ? $input['log_options'] : [],
                 ]
             ];
         });
@@ -53,12 +54,19 @@ class DevServices extends Command implements SignalableCommandInterface
             $processes->each(function($input, $key) {
                 $process = $input['process'];
                 if ($process->isRunning() && $input['logging']) {
+                    $logOptions = [
+                        'apply_style_to_full_line' => $input['log_options']['apply_style_to_full_line'] ?? false,
+                    ];
                     $output = $process->getIncrementalOutput();
                     $errorOutput = $process->getIncrementalErrorOutput();
                     if (!empty($output)) {
                         $output = explode(PHP_EOL, $output);
-                        collect($output)->filter()->each(function($output) use ($key) {
-                            $this->line("<$key>$key</$key>: " . trim($output));
+                        collect($output)->filter()->each(function($output) use ($key, $logOptions) {
+                            if ($logOptions['apply_style_to_full_line']) {
+                                $this->line("<$key>$key: " . trim($output) . "</$key>", $key);
+                            } else {
+                                $this->line("<$key>$key</$key>: " . trim($output));
+                            }
                         });
                     }
                     if (!empty($errorOutput)) {
