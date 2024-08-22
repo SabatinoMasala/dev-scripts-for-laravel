@@ -45,9 +45,11 @@ class RunProcessWithWatcher extends Command
             if ($watcher && $watcher->isRunning()) {
                 $lines = explode(PHP_EOL, $watcher->getIncrementalOutput());
                 $lines = array_filter($lines);
-                collect($lines)->each(function($line) use ($key) {
+                collect($lines)->each(function($line) use ($key, $input) {
                     if (!empty(trim($line))) {
-                        $this->comment('Restarting ' . $key . ' due to event: ' . $line);
+                        if ($input['restart']['logging'] === true) {
+                            $this->comment('Restarting ' . $key . ' due to event: ' . $line);
+                        }
                         $this->process->stop();
                         // .env might've been updated
                         $this->process->setEnv(Dotenv::createArrayBacked(base_path())->load());
