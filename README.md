@@ -27,7 +27,11 @@ return [
             'command' => ['php', 'artisan', 'horizon'],
             'style' => ['cyan', null, ['bold']],
             'logging' => true,
+            'log_options' => [
+                'apply_style_to_full_line' => true
+            ],
             'restart' => [
+                'logging' => true,
                 'watch' => [
                     '.env',
                     'app/Jobs/*'
@@ -77,6 +81,15 @@ To make the logs more readable, you can define a style for each script.
 [
     'style' => ['magenta', null, ['bold']],
 ]
+```
+
+## Log options
+
+```
+'log_options' => [
+    // Apply the style to the full line, not just the script name
+    'apply_style_to_full_line' => true
+],
 ```
 
 These parameters are passed into the constructor of `Symfony\Component\Console\Formatter\OutputFormatterStyle`, you can refer to the documentation here:
