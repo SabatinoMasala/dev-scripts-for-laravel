@@ -91,22 +91,9 @@ To make the logs more readable, you can define a style for each script.
     'apply_style_to_full_line' => true
 ],
 ```
+
 These parameters are passed into the constructor of `Symfony\Component\Console\Formatter\OutputFormatterStyle`, you can refer to the documentation here:
 https://symfony.com/doc/current/console/coloring.html
-
-## Working Directory
-
-You can change the working directory for each script by setting the `working_directory` option.
-When combining the `working_directory` option with the `restart.watch` option, the paths in the `restart.watch` option should be relative to the `working_directory`.
-
-```
-'working_directory' => 'path/to/working/directory',
-```
-
-### ENV:
-
-By default, all scripts will run with the same environment variables as the parent process.
-When using the `working_directory` option, you can define a custom `.env` file in that directory to be used for that process instead of the default environment variables.
 
 ## Credits
 
