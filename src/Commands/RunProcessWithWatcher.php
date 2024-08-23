@@ -33,15 +33,17 @@ class RunProcessWithWatcher extends Command
     {
         $key = $this->argument('key');
         $input = json_decode($this->argument('config'), true);
+        $workingDirectory = $input['working_directory'] ?? null;
+
         $this->process = new Process($input['command']);
-        if (!empty($input['working_directory'])) {
-            $this->process->setWorkingDirectory($input['working_directory']);
+        if ($workingDirectory) {
+            $this->process->setWorkingDirectory($workingDirectory);
         }
         $this->process->start();
 
         $watcher = null;
         if (!empty($input['restart']) && !empty($input['restart']['watch'])) {
-            $watcher = $this->getWatchProcess($input['restart']['watch']);
+            $watcher = $this->getWatchProcess($input['restart']['watch'], $workingDirectory);
         }
 
         while (true) {
@@ -77,7 +79,7 @@ class RunProcessWithWatcher extends Command
         }
     }
 
-    protected function getWatchProcess($paths): Process
+    protected function getWatchProcess($paths, $workingDirectory = null): Process
     {
         $command = [
             (new ExecutableFinder)->find('node'),
@@ -92,6 +94,10 @@ class RunProcessWithWatcher extends Command
             command: $command,
             timeout: null,
         );
+
+        if ($workingDirectory) {
+            $process->setWorkingDirectory($workingDirectory);
+        }
 
         $process->start();
 

@@ -95,6 +95,7 @@ To make the logs more readable, you can define a style for each script.
 ## Working Directory
 
 You can change the working directory for each script by setting the `working_directory` option.
+When combining the `working_directory` option with the `restart.watch` option, the paths in the `restart.watch` option should be relative to the `working_directory`.
 
 ```
 'working_directory' => 'path/to/working/directory',
