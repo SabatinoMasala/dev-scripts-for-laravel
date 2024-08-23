@@ -92,6 +92,14 @@ To make the logs more readable, you can define a style for each script.
 ],
 ```
 
+## Working Directory
+
+You can change the working directory for each script by setting the `working_directory` option.
+
+```
+'working_directory' => 'path/to/working/directory',
+```
+
 These parameters are passed into the constructor of `Symfony\Component\Console\Formatter\OutputFormatterStyle`, you can refer to the documentation here:
 https://symfony.com/doc/current/console/coloring.html
 

@@ -4,6 +4,7 @@ return [
     'scripts' => [
         'horizon' => [
             'command' => ['php', 'artisan', 'queue:work'],
+            'working_directory' => null,
             'style' => ['cyan', null, ['bold']],
             'logging' => true,
             'log_options' => [

@@ -34,6 +34,9 @@ class RunProcessWithWatcher extends Command
         $key = $this->argument('key');
         $input = json_decode($this->argument('config'), true);
         $this->process = new Process($input['command']);
+        if (!empty($input['working_directory'])) {
+            $this->process->setWorkingDirectory($input['working_directory']);
+        }
         $this->process->start();
 
         $watcher = null;
