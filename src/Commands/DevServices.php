@@ -34,12 +34,13 @@ class DevServices extends Command implements SignalableCommandInterface
 
         $processes = collect($processes)->mapWithKeys(function($input, $key) {
             $this->info('Starting ' . $key);
+            $snakeKey = \Str::snake($key);
             $style = new OutputFormatterStyle(...$input['style']);
-            $this->output->getFormatter()->setStyle($key, $style);
+            $this->output->getFormatter()->setStyle($snakeKey, $style);
             $process = new Process(['php', 'artisan', 'run:process-with-watcher', $key, json_encode($input)]);
             $process->start();
             return [
-                $key => [
+                $snakeKey => [
                     'process' => $process,
                     'logging' => $input['logging'],
                     'log_options' => !empty($input['log_options']) ? $input['log_options'] : [],
