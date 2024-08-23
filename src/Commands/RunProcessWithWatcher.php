@@ -35,29 +35,33 @@ class RunProcessWithWatcher extends Command
         $input = json_decode($this->argument('config'), true);
         $workingDirectory = $input['working_directory'] ?? null;
 
-        $this->process = new Process($input['command']);
-        if ($workingDirectory) {
-            $this->process->setWorkingDirectory($workingDirectory);
+        // Check if there is a .env file in the working directory, if so load that one instead of the default
+        $envDirectory = base_path();
+        if ($workingDirectory && file_exists($workingDirectory . '/.env')) {
+            $envDirectory = $workingDirectory;
         }
+        $env = Dotenv::createArrayBacked($envDirectory)->load();
+
+        $this->process = new Process($input['command'], $workingDirectory, $env);
         $this->process->start();
 
         $watcher = null;
         if (!empty($input['restart']) && !empty($input['restart']['watch'])) {
-            $watcher = $this->getWatchProcess($input['restart']['watch'], $workingDirectory);
+            $watcher = $this->getWatchProcess($input['restart']['watch'], $workingDirectory, $env);
         }
 
         while (true) {
             if ($watcher && $watcher->isRunning()) {
                 $lines = explode(PHP_EOL, $watcher->getIncrementalOutput());
                 $lines = array_filter($lines);
-                collect($lines)->each(function($line) use ($key, $input) {
+                collect($lines)->each(function($line) use ($key, $input, $envDirectory) {
                     if (!empty(trim($line))) {
                         if ($input['restart']['logging'] === true) {
                             $this->comment('Restarting ' . $key . ' due to event: ' . $line);
                         }
                         $this->process->stop();
                         // .env might've been updated
-                        $this->process->setEnv(Dotenv::createArrayBacked(base_path())->load());
+                        $this->process->setEnv(Dotenv::createArrayBacked($envDirectory)->load());
                         $this->process = $this->process->restart();
                     }
                 });
@@ -79,7 +83,7 @@ class RunProcessWithWatcher extends Command
         }
     }
 
-    protected function getWatchProcess($paths, $workingDirectory = null): Process
+    protected function getWatchProcess($paths, $workingDirectory = null, $env = null): Process
     {
         $command = [
             (new ExecutableFinder)->find('node'),
@@ -97,6 +101,10 @@ class RunProcessWithWatcher extends Command
 
         if ($workingDirectory) {
             $process->setWorkingDirectory($workingDirectory);
+        }
+
+        if ($env) {
+            $process->setEnv($env);
         }
 
         $process->start();
